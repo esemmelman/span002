@@ -434,6 +434,19 @@
 
     .empty-card { color: #607087; font-size: .65em; }
 
+    .spanish-page {
+      font-size: clamp(32px, 3.1vw, 54px);
+      line-height: 1.42;
+    }
+
+    .spanish-page article p { font-size: 1.18em; }
+
+    .automatic-sync {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 2px solid #ffffff55;
+    }
+
     @media (max-width: 850px) {
       .app { grid-template-columns: 1fr; }
       nav { position: static; height: auto; }
@@ -449,18 +462,63 @@
   <div class="app">
   <nav aria-label="Study page selector">
     <label for="page-picker">Choose a page</label>
-    <select id="page-picker" size="3">
+    <select id="page-picker" size="4">
+      <option value="spanish">Page in Spanish</option>
       <option value="english" selected>Page in English</option>
       <option value="rosa">Rosa flashcards</option>
       <option value="matching">Matching</option>
     </select>
-    <div class="sync-panel">
-      <label for="sync-code">Cloud sync code</label>
-      <input id="sync-code" type="password" minlength="8" maxlength="128" autocomplete="off" placeholder="At least 8 characters">
-      <button id="sync-button" type="button">Connect and sync</button>
-      <p id="sync-status" aria-live="polite">Stored on this device only.</p>
+    <div class="automatic-sync">
+      <p id="sync-status" aria-live="polite">Connecting to cloud…</p>
     </div>
   </nav>
+
+  <main id="spanish-page" class="spanish-page" hidden>
+    <h1>1. Tu vida diaria</h1>
+
+    <aside class="objectives">
+      <h2>Objetivos</h2>
+      <ul>
+        <li>Hablar y escribir sobre tu rutina diaria</li>
+        <li>Hablar sobre la escuela y las actividades extracurriculares</li>
+      </ul>
+    </aside>
+
+    <h2 class="hero">¿Cómo pasan los días los jóvenes?</h2>
+
+    <div class="stories">
+      <article>
+        <h3>Rosa</h3>
+        <p>Durante la semana trabajo de las tres a las seis en el supermercado y por la noche tengo que estudiar. Me gusta poner música cuando hago la tarea para la escuela. Los fines de semana mi novio y yo vamos al parque para jugar con el perro. En el invierno nos gusta pasar tiempo en el gimnasio. Tienen una piscina excelente.</p>
+      </article>
+
+      <article>
+        <h3>Nacho</h3>
+        <p>Juego al fútbol en el otoño y al béisbol en la primavera, así que tengo práctica todos los días. Por la noche tengo que hacer la tarea y ayudar a mi hermano con las matemáticas. Los fines de semana salgo con mis amigos a jugar deportes o vamos al centro comunitario para jugar a los videojuegos.</p>
+      </article>
+    </div>
+
+    <section class="exercise">
+      <h2>1. ¿Qué hacen?</h2>
+      <p><span class="label">Leer • Hablar en pareja</span><br>Contesta las preguntas sobre los blogs de los jóvenes.</p>
+      <ol>
+        <li>¿Cuántas horas trabaja Rosa y dónde?</li>
+        <li>¿Adónde va para jugar con el perro y con quién?</li>
+        <li>¿Qué deportes juega Nacho?</li>
+        <li>¿Qué hace Nacho por la noche?</li>
+        <li>¿Con qué elementos de la vida de Nacho y Rosa te identificas?</li>
+      </ol>
+    </section>
+
+    <section class="exercise">
+      <h2>2. Tu vida diaria</h2>
+      <p><span class="label">Escribir</span><br>¿Qué haces durante el día? Completa las frases con lo que haces en un día típico.</p>
+      <ol class="prompts">
+        <li>Voy…</li><li>Hago…</li><li>Tomo…</li><li>Juego…</li><li>Pongo…</li>
+        <li>Salgo…</li><li>Miro…</li><li>Ayudo…</li><li>Estudio…</li><li>Escucho…</li>
+      </ol>
+    </section>
+  </main>
 
   <main id="english-page">
     <h1>1. Your Daily Life</h1>
@@ -564,6 +622,7 @@
     const rosaText = "During the week, I work from three to six at the supermarket, and at night I have to study. I like to play music when I do my homework for school. On weekends, my boyfriend and I go to the park to play with the dog. In winter, we like to spend time at the gym. They have an excellent pool.";
     const supabaseUrl = "https://fgomaujsdblpzxhnnqrg.supabase.co";
     const supabaseKey = "sb_publishable_JOUqLZDnfGu_yCa6k6FVDQ_AYwpr72i";
+    const syncCode = "span002-rosa-shared-v1";
     const translations = [
       ["during the week", "durante la semana"],
       ["i work", "trabajo"],
@@ -592,6 +651,7 @@
     const cards = [];
 
     const picker = document.querySelector("#page-picker");
+    const spanishPage = document.querySelector("#spanish-page");
     const englishPage = document.querySelector("#english-page");
     const rosaPage = document.querySelector("#rosa-page");
     const matchingPage = document.querySelector("#matching-page");
@@ -602,7 +662,6 @@
     const rosaEnglish = document.querySelector("#rosa-english");
     const groupToggle = document.querySelector("#group-toggle");
     const groupStatus = document.querySelector("#group-status");
-    const syncCodeInput = document.querySelector("#sync-code");
     const syncStatus = document.querySelector("#sync-status");
     let cardIndex = 0;
     let showingSpanish = false;
@@ -622,8 +681,6 @@
     }
 
     async function saveCloudDeck() {
-      const syncCode = syncCodeInput.value.trim();
-      if (syncCode.length < 8) return;
       syncStatus.textContent = "Saving…";
       try {
         await callSyncFunction("span002_save_deck_v1", {
@@ -638,15 +695,9 @@
     }
 
     async function connectCloud() {
-      const syncCode = syncCodeInput.value.trim();
-      if (syncCode.length < 8) {
-        syncStatus.textContent = "Use a sync code with at least 8 characters.";
-        return;
-      }
       syncStatus.textContent = "Connecting…";
       try {
         const rows = await callSyncFunction("span002_load_deck_v1", { p_sync_code: syncCode });
-        localStorage.setItem("span002-sync-code", syncCode);
         if (rows?.length) {
           rosaEnglish.innerHTML = rows[0].highlight_html;
           cards.splice(0, cards.length, ...rows[0].cards.map(item => ({
@@ -775,9 +826,11 @@
     }
 
     function showSelectedPage() {
+      const showSpanish = picker.value === "spanish";
       const showRosa = picker.value === "rosa";
       const showMatching = picker.value === "matching";
-      englishPage.hidden = showRosa || showMatching;
+      spanishPage.hidden = !showSpanish;
+      englishPage.hidden = showSpanish || showRosa || showMatching;
       rosaPage.hidden = !showRosa;
       matchingPage.hidden = !showMatching;
       if (showMatching) buildMatchingGame();
@@ -927,7 +980,6 @@
     }
 
     picker.addEventListener("change", showSelectedPage);
-    document.querySelector("#sync-button").addEventListener("click", connectCloud);
     groupToggle.addEventListener("change", () => {
       groupStatus.textContent = groupToggle.checked
         ? "Highlight mode is on. Drag across the words for your next flashcard."
@@ -952,8 +1004,7 @@
     document.querySelector("#next-card").addEventListener("click", () => moveCard(1));
 
     restoreHighlights();
-    syncCodeInput.value = localStorage.getItem("span002-sync-code") || "";
-    if (syncCodeInput.value) connectCloud();
+    connectCloud();
     groupStatus.textContent = "Highlight mode is on. Drag across the words for your next flashcard.";
     renderCard();
   </script>
