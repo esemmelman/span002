@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Daily Life — English Translation</title>
+  <style>
+    :root {
+      --blue: #075b9e;
+      --navy: #102b63;
+      --red: #c6283d;
+      --ink: #172033;
+      --paper: #fffdf7;
+      --line: #c9d8e7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eaf1f6;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(22px, 2.25vw, 38px);
+      line-height: 1.35;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(230px, 18vw) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 18px;
+      color: white;
+      background: var(--navy);
+    }
+
+    nav label {
+      display: block;
+      margin-bottom: 14px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    nav select {
+      width: 100%;
+      min-height: 150px;
+      border: 3px solid #8dc7ef;
+      border-radius: 12px;
+      color: var(--navy);
+      background: white;
+      font: 700 20px/1.3 Arial, sans-serif;
+    }
+
+    nav option { padding: 16px 10px; }
+
+    .sync-panel {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 2px solid #ffffff55;
+    }
+
+    .sync-panel input {
+      width: 100%;
+      padding: 11px;
+      border: 2px solid #8dc7ef;
+      border-radius: 9px;
+      font: 18px Arial, sans-serif;
+    }
+
+    .sync-panel button { width: 100%; margin-top: 10px; font-size: 18px; background: #16834a; }
+    #sync-status { margin-top: 10px; font-size: 16px; line-height: 1.3; }
+
+    main {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: clamp(22px, 4vw, 72px);
+      background: var(--paper);
+      box-shadow: 0 0 50px #1b35542b;
+    }
+
+    [hidden] { display: none !important; }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: .25em;
+      color: var(--blue);
+      font-family: Georgia, serif;
+      font-size: clamp(58px, 8vw, 132px);
+      line-height: .95;
+    }
+
+    .objectives {
+      margin: 1.5em 0;
+      padding: 1em;
+      border-left: .35em solid var(--red);
+      background: #fff4f4;
+    }
+
+    .objectives h2 {
+      color: var(--red);
+      font-size: 1.35em;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      margin: 1.5em calc(clamp(22px, 4vw, 72px) * -1) 1em;
+      padding: .65em clamp(22px, 4vw, 72px);
+      color: white;
+      background: linear-gradient(100deg, var(--navy), var(--blue));
+      font-size: clamp(42px, 6vw, 94px);
+      line-height: 1.02;
+    }
+
+    .stories {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1em;
+    }
+
+    article {
+      padding: 1.15em;
+      border-radius: 24px;
+      background: #eef5fb;
+    }
+
+    article h3 {
+      color: var(--blue);
+      font-size: 1.65em;
+    }
+
+    article p {
+      margin-bottom: 0;
+      font-size: 1.12em;
+    }
+
+    #rosa-english {
+      cursor: text;
+      user-select: text;
+    }
+
+    #rosa-english::selection,
+    #rosa-english *::selection {
+      color: #111;
+      background: #d9c2ff;
+    }
+
+    .phrase-group {
+      display: inline;
+      padding: .08em .12em;
+      border-radius: .22em;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .grouping-on .phrase-group { cursor: pointer; }
+    .grouping-on .phrase-group:nth-child(4n + 1) { background: #ffe182; }
+    .grouping-on .phrase-group:nth-child(4n + 2) { background: #aee8ff; }
+    .grouping-on .phrase-group:nth-child(4n + 3) { background: #c9f5bd; }
+    .grouping-on .phrase-group:nth-child(4n) { background: #f4c4ef; }
+    .grouping-on .phrase-group:hover,
+    .grouping-on .phrase-group:focus { outline: 5px solid var(--blue); }
+    .grouping-on .phrase-group.added { opacity: .55; outline: 4px solid #24833b; }
+
+    .user-highlight {
+      padding: .06em .1em;
+      border-radius: .2em;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .user-highlight.color-a { background: #ffe182; }
+    .user-highlight.color-b { background: #aee8ff; }
+    .user-highlight { cursor: pointer; }
+    .user-highlight:hover { outline: 4px solid #c6283d; }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: .7em 0;
+      font-size: .85em;
+      font-weight: 800;
+    }
+
+    .switch {
+      position: relative;
+      flex: 0 0 auto;
+      width: 76px;
+      height: 42px;
+    }
+
+    .switch input { width: 1px; height: 1px; opacity: 0; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: #8793a3;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      left: 5px;
+      top: 5px;
+      border-radius: 50%;
+      background: white;
+      transition: .2s;
+    }
+
+    .switch input:checked + .slider { background: #24833b; }
+    .switch input:checked + .slider::before { transform: translateX(34px); }
+    .switch input:focus-visible + .slider { outline: 4px solid #ffcc3d; }
+
+    #group-status { min-height: 1.4em; color: #17672b; font-weight: 800; }
+
+    .selection-tools {
+      margin-top: 1em;
+      padding-top: .8em;
+      border-top: 2px solid var(--line);
+    }
+
+    .selection-tools p { margin-bottom: .6em; font-size: .82em; }
+
+    section.exercise {
+      margin-top: 2.2em;
+      padding-top: 1.25em;
+      border-top: .25em solid var(--line);
+    }
+
+    section.exercise h2 {
+      color: var(--blue);
+      font-family: Georgia, serif;
+      font-size: clamp(44px, 5vw, 76px);
+    }
+
+    .label {
+      color: var(--red);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    li { margin: .65em 0; }
+
+    .prompts {
+      columns: 2;
+      column-gap: 2.5em;
+      font-size: 1.15em;
+    }
+
+    .flashcard-page {
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .flashcard {
+      display: grid;
+      place-items: center;
+      width: min(900px, 100%);
+      min-height: 430px;
+      margin: 1.5em auto .75em;
+      padding: 1.2em;
+      border: 7px solid var(--blue);
+      border-radius: 34px;
+      color: var(--navy);
+      background: #eef7ff;
+      box-shadow: 0 18px 38px #16385c26;
+      cursor: pointer;
+      font-size: clamp(42px, 6vw, 86px);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .card-language {
+      display: block;
+      margin-bottom: 1em;
+      color: var(--red);
+      font-size: 20px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .card-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    button {
+      padding: .65em 1em;
+      border: 0;
+      border-radius: 14px;
+      color: white;
+      background: var(--blue);
+      font: 700 24px Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    button:hover, button:focus { background: var(--navy); }
+
+    .card-count { font-size: 24px; }
+
+    .matching-page { min-height: 100vh; }
+
+    .matching-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(18px, 3vw, 42px);
+      align-items: start;
+    }
+
+    .match-column {
+      display: grid;
+      gap: 18px;
+    }
+
+    .match-column h2 {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      margin: 0;
+      padding: 12px 6px;
+      color: var(--blue);
+      background: var(--paper);
+      text-align: center;
+    }
+
+    .match-item {
+      width: 100%;
+      min-height: 120px;
+      padding: .75em;
+      border: 5px solid var(--blue);
+      border-radius: 18px;
+      color: var(--navy);
+      background: white;
+      font-size: clamp(22px, 2.4vw, 36px);
+      text-align: left;
+    }
+
+    .match-item.selected { color: #111; background: #ffe182; }
+    .match-item.pinned {
+      position: sticky;
+      top: 88px;
+      z-index: 20;
+      box-shadow: 0 10px 28px #102b6355;
+    }
+    .match-item.correct { color: #124f23; border-color: #24833b; background: #c9f5bd; }
+    .match-item.wrong { color: #731523; border-color: var(--red); background: #ffd4da; }
+    .match-item:hover:not(:disabled),
+    .match-item:focus-visible:not(:disabled) {
+      color: var(--navy);
+      background: #dcefff;
+      border-color: var(--navy);
+    }
+    .match-item.selected:hover { color: #111; background: #ffe182; }
+    .match-item:disabled { cursor: default; opacity: .72; }
+    .matching-page .match-item:hover:not(:disabled),
+    .matching-page .match-item:focus:not(:disabled) {
+      color: var(--navy);
+      background: #dcefff;
+    }
+    .matching-page .match-item.wrong,
+    .matching-page .match-item.wrong:hover,
+    .matching-page .match-item.wrong:focus {
+      color: #731523;
+      border-color: var(--red);
+      background: #ffd4da;
+    }
+    #match-status { min-height: 1.5em; font-weight: 800; text-align: center; }
+
+    .firework-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .spark {
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--spark-color);
+      box-shadow: 0 0 12px var(--spark-color);
+      animation: burst .55s ease-out forwards;
+    }
+
+    @keyframes burst {
+      from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      to { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(.2); opacity: 0; }
+    }
+
+    .card-builder {
+      width: min(900px, 100%);
+      margin: 1em auto;
+      padding: 1em;
+      border-radius: 24px;
+      background: #fff4dc;
+      text-align: left;
+    }
+
+    .card-builder h2 { margin-bottom: .5em; }
+
+    .card-builder label {
+      display: block;
+      margin-top: .7em;
+      font-weight: 800;
+    }
+
+    .card-builder textarea {
+      width: 100%;
+      min-height: 110px;
+      margin-top: .25em;
+      padding: .6em;
+      border: 3px solid var(--line);
+      border-radius: 12px;
+      font: inherit;
+      resize: vertical;
+    }
+
+    .empty-card { color: #607087; font-size: .65em; }
+
+    @media (max-width: 850px) {
+      .app { grid-template-columns: 1fr; }
+      nav { position: static; height: auto; }
+      nav select { min-height: 110px; }
+      .stories { grid-template-columns: 1fr; }
+      .prompts { columns: 1; }
+      .matching-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .match-item { min-height: 100px; padding: .45em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+  <nav aria-label="Study page selector">
+    <label for="page-picker">Choose a page</label>
+    <select id="page-picker" size="3">
+      <option value="english" selected>Page in English</option>
+      <option value="rosa">Rosa flashcards</option>
+      <option value="matching">Matching</option>
+    </select>
+    <div class="sync-panel">
+      <label for="sync-code">Cloud sync code</label>
+      <input id="sync-code" type="password" minlength="8" maxlength="128" autocomplete="off" placeholder="At least 8 characters">
+      <button id="sync-button" type="button">Connect and sync</button>
+      <p id="sync-status" aria-live="polite">Stored on this device only.</p>
+    </div>
+  </nav>
+
+  <main id="english-page">
+    <h1>1. Your Daily Life</h1>
+
+    <aside class="objectives">
+      <h2>Objectives</h2>
+      <ul>
+        <li>Talk and write about your daily routine</li>
+        <li>Discuss school and extracurricular activities</li>
+      </ul>
+    </aside>
+
+    <h2 class="hero">How Do Young People Spend Their Days?</h2>
+
+    <div class="stories">
+      <article>
+        <h3>Rosa</h3>
+        <p id="rosa-english"></p>
+        <div class="selection-tools">
+          <div class="switch-row">
+            <label class="switch" aria-label="Turn colored phrase groups on or off">
+              <input id="group-toggle" type="checkbox" checked>
+              <span class="slider"></span>
+            </label>
+            <span>Colored flashcard groups</span>
+          </div>
+          <p id="group-help">Turn on the slider, then drag across any group of English words. Each new group will stay highlighted in an alternating color and become one flashcard. Click a saved highlight once to remove it.</p>
+          <p id="group-status" aria-live="polite"></p>
+        </div>
+      </article>
+
+      <article>
+        <h3>Nacho</h3>
+        <p>I play soccer in the fall and baseball in the spring, so I have practice every day. At night, I have to do my homework and help my brother with math. On weekends, I go out with my friends to play sports, or we go to the community center to play video games.</p>
+      </article>
+    </div>
+
+    <section class="exercise">
+      <h2>1. What Do They Do?</h2>
+      <p><span class="label">Read • Speak with a partner</span><br>Answer the questions about the young people’s blogs.</p>
+      <ol>
+        <li>How many hours does Rosa work, and where?</li>
+        <li>Where does she go to play with the dog, and with whom?</li>
+        <li>What sports does Nacho play?</li>
+        <li>What does Nacho do at night?</li>
+        <li>What parts of Nacho’s and Rosa’s lives do you identify with?</li>
+      </ol>
+    </section>
+
+    <section class="exercise">
+      <h2>2. Your Daily Life</h2>
+      <p><span class="label">Write</span><br>What do you do during the day? Complete the phrases with what you do on a typical day.</p>
+      <ol class="prompts">
+        <li>I go…</li>
+        <li>I do / I make…</li>
+        <li>I take / I drink…</li>
+        <li>I play…</li>
+        <li>I put…</li>
+        <li>I go out…</li>
+        <li>I watch…</li>
+        <li>I help…</li>
+        <li>I study…</li>
+        <li>I listen to…</li>
+      </ol>
+    </section>
+  </main>
+
+  <main id="rosa-page" class="flashcard-page" hidden>
+    <h1>Rosa Flashcards</h1>
+    <p>Each English group you highlighted is one card. Click a card to switch between its English and matching Spanish.</p>
+    <div id="flashcard" class="flashcard" role="button" tabindex="0" aria-label="Flip flashcard">
+      <div>
+        <span id="card-language" class="card-language">Spanish</span>
+        <span id="card-text"></span>
+      </div>
+    </div>
+    <p id="card-count" class="card-count"></p>
+    <div class="card-controls">
+      <button id="previous-card" type="button">← Previous</button>
+      <button id="flip-card" type="button">Flip card</button>
+      <button id="next-card" type="button">Next →</button>
+    </div>
+  </main>
+
+  <main id="matching-page" class="matching-page" hidden>
+    <p id="match-status" aria-live="polite"></p>
+    <div class="matching-grid">
+      <section class="match-column" aria-labelledby="english-match-title">
+        <h2 id="english-match-title">English</h2>
+        <div id="english-matches" class="match-column"></div>
+      </section>
+      <section class="match-column" aria-labelledby="spanish-match-title">
+        <h2 id="spanish-match-title">Spanish</h2>
+        <div id="spanish-matches" class="match-column"></div>
+      </section>
+    </div>
+  </main>
+  </div>
+
+  <script>
+    const rosaText = "During the week, I work from three to six at the supermarket, and at night I have to study. I like to play music when I do my homework for school. On weekends, my boyfriend and I go to the park to play with the dog. In winter, we like to spend time at the gym. They have an excellent pool.";
+    const supabaseUrl = "https://fgomaujsdblpzxhnnqrg.supabase.co";
+    const supabaseKey = "sb_publishable_JOUqLZDnfGu_yCa6k6FVDQ_AYwpr72i";
+    const translations = [
+      ["during the week", "durante la semana"],
+      ["i work", "trabajo"],
+      ["from three to six", "de las tres a las seis"],
+      ["at the supermarket", "en el supermercado"],
+      ["and at night", "y por la noche"],
+      ["at night", "por la noche"],
+      ["i have to study", "tengo que estudiar"],
+      ["i like to play music", "me gusta poner música"],
+      ["when i do my homework", "cuando hago la tarea"],
+      ["for school", "para la escuela"],
+      ["on weekends", "los fines de semana"],
+      ["my boyfriend and i", "mi novio y yo"],
+      ["we go to the park", "vamos al parque"],
+      ["to play with the dog", "para jugar con el perro"],
+      ["in winter", "en el invierno"],
+      ["we like to spend time", "nos gusta pasar tiempo"],
+      ["at the gym", "en el gimnasio"],
+      ["they have", "tienen"],
+      ["an excellent pool", "una piscina excelente"],
+      ["and", "y"], ["i", "yo"], ["we", "nosotros"],
+      ["study", "estudiar"], ["music", "música"], ["homework", "la tarea"],
+      ["school", "la escuela"], ["park", "el parque"], ["dog", "el perro"],
+      ["gym", "el gimnasio"], ["pool", "la piscina"]
+    ].sort((a, b) => b[0].split(" ").length - a[0].split(" ").length);
+    const cards = [];
+
+    const picker = document.querySelector("#page-picker");
+    const englishPage = document.querySelector("#english-page");
+    const rosaPage = document.querySelector("#rosa-page");
+    const matchingPage = document.querySelector("#matching-page");
+    const card = document.querySelector("#flashcard");
+    const cardText = document.querySelector("#card-text");
+    const cardLanguage = document.querySelector("#card-language");
+    const cardCount = document.querySelector("#card-count");
+    const rosaEnglish = document.querySelector("#rosa-english");
+    const groupToggle = document.querySelector("#group-toggle");
+    const groupStatus = document.querySelector("#group-status");
+    const syncCodeInput = document.querySelector("#sync-code");
+    const syncStatus = document.querySelector("#sync-status");
+    let cardIndex = 0;
+    let showingSpanish = false;
+    let selectedEnglish = null;
+    let selectedSpanish = null;
+    let matchedCount = 0;
+
+    async function callSyncFunction(name, body) {
+      const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${name}`, {
+        method: "POST",
+        headers: { "apikey": supabaseKey, "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (!response.ok) throw new Error((await response.json()).message || "Cloud sync failed");
+      const text = await response.text();
+      return text ? JSON.parse(text) : null;
+    }
+
+    async function saveCloudDeck() {
+      const syncCode = syncCodeInput.value.trim();
+      if (syncCode.length < 8) return;
+      syncStatus.textContent = "Saving…";
+      try {
+        await callSyncFunction("span002_save_deck_v1", {
+          p_sync_code: syncCode,
+          p_highlight_html: rosaEnglish.innerHTML,
+          p_cards: cards
+        });
+        syncStatus.textContent = "Saved to the cloud.";
+      } catch (error) {
+        syncStatus.textContent = error.message;
+      }
+    }
+
+    async function connectCloud() {
+      const syncCode = syncCodeInput.value.trim();
+      if (syncCode.length < 8) {
+        syncStatus.textContent = "Use a sync code with at least 8 characters.";
+        return;
+      }
+      syncStatus.textContent = "Connecting…";
+      try {
+        const rows = await callSyncFunction("span002_load_deck_v1", { p_sync_code: syncCode });
+        localStorage.setItem("span002-sync-code", syncCode);
+        if (rows?.length) {
+          rosaEnglish.innerHTML = rows[0].highlight_html;
+          cards.splice(0, cards.length, ...rows[0].cards.map(item => ({
+            ...item,
+            spanish: item.spanish || translateSelection(item.english)
+          })));
+          localStorage.setItem("rosa-highlight-html", rosaEnglish.innerHTML);
+          localStorage.setItem("rosa-highlight-cards", JSON.stringify(cards));
+          cardIndex = 0;
+          showingSpanish = false;
+          renderCard();
+          syncStatus.textContent = "Cloud deck loaded.";
+        } else {
+          await saveCloudDeck();
+        }
+      } catch (error) {
+        syncStatus.textContent = error.message;
+      }
+    }
+
+    function translateSelection(english) {
+      const ending = /[.!?]$/.test(english.trim()) ? english.trim().slice(-1) : "";
+      const words = english.toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/);
+      const result = [];
+      let position = 0;
+      while (position < words.length) {
+        const match = translations.find(([source]) => {
+          const sourceWords = source.split(" ");
+          return sourceWords.every((word, offset) => words[position + offset] === word);
+        });
+        if (match) {
+          result.push(match[1]);
+          position += match[0].split(" ").length;
+        } else {
+          result.push(words[position]);
+          position += 1;
+        }
+      }
+      const spanish = result.join(" ").replace(/\s+/g, " ").trim();
+      return spanish ? spanish.charAt(0).toUpperCase() + spanish.slice(1) + ending : "";
+    }
+
+    function renderRosaText() {
+      rosaEnglish.textContent = rosaText;
+    }
+
+    function saveHighlight() {
+      if (!groupToggle.checked) return;
+      const selection = window.getSelection();
+      if (!selection.rangeCount || selection.isCollapsed) return;
+      const range = selection.getRangeAt(0);
+      if (!rosaEnglish.contains(range.commonAncestorContainer)) return;
+      if (range.commonAncestorContainer.parentElement?.closest(".user-highlight")) {
+        groupStatus.textContent = "Choose words that are not already part of a highlighted group.";
+        return;
+      }
+      if ([...rosaEnglish.querySelectorAll(".user-highlight")].some(item => range.intersectsNode(item))) {
+        groupStatus.textContent = "New groups cannot overlap an existing highlighted group.";
+        return;
+      }
+
+      const english = selection.toString().trim();
+      if (!english) return;
+      const mark = document.createElement("mark");
+      mark.className = `user-highlight ${cards.length % 2 ? "color-b" : "color-a"}`;
+      try {
+        range.surroundContents(mark);
+      } catch {
+        groupStatus.textContent = "Please select one continuous, unhighlighted group of words.";
+        return;
+      }
+
+      cards.push({ english, spanish: translateSelection(english) });
+      cardIndex = cards.length - 1;
+      showingSpanish = false;
+      mark.dataset.cardIndex = cardIndex;
+      groupStatus.textContent = `Saved group ${cards.length}: ${english}`;
+      selection.removeAllRanges();
+      localStorage.setItem("rosa-highlight-html", rosaEnglish.innerHTML);
+      localStorage.setItem("rosa-highlight-cards", JSON.stringify(cards));
+      saveCloudDeck();
+      renderCard();
+    }
+
+    function restoreHighlights() {
+      const savedHtml = localStorage.getItem("rosa-highlight-html");
+      const savedCards = localStorage.getItem("rosa-highlight-cards");
+      if (!savedHtml || !savedCards) {
+        renderRosaText();
+        return;
+      }
+      try {
+        rosaEnglish.innerHTML = savedHtml;
+        const restoredCards = JSON.parse(savedCards).map(savedCard => ({
+          ...savedCard,
+          spanish: translateSelection(savedCard.english)
+        }));
+        cards.push(...restoredCards);
+        localStorage.setItem("rosa-highlight-cards", JSON.stringify(cards));
+      } catch {
+        renderRosaText();
+      }
+    }
+
+    function removeHighlight(mark) {
+      const index = Number(mark.dataset.cardIndex);
+      if (!Number.isInteger(index) || !cards[index]) return;
+      const removedText = cards[index].english;
+      cards.splice(index, 1);
+      mark.replaceWith(document.createTextNode(mark.textContent));
+      rosaEnglish.normalize();
+
+      [...rosaEnglish.querySelectorAll(".user-highlight")].forEach((item, newIndex) => {
+        item.dataset.cardIndex = newIndex;
+        item.classList.toggle("color-a", newIndex % 2 === 0);
+        item.classList.toggle("color-b", newIndex % 2 === 1);
+      });
+
+      cardIndex = Math.max(0, Math.min(cardIndex, cards.length - 1));
+      showingSpanish = false;
+      localStorage.setItem("rosa-highlight-html", rosaEnglish.innerHTML);
+      localStorage.setItem("rosa-highlight-cards", JSON.stringify(cards));
+      saveCloudDeck();
+      groupStatus.textContent = `Removed group: ${removedText}`;
+      renderCard();
+    }
+
+    function showSelectedPage() {
+      const showRosa = picker.value === "rosa";
+      const showMatching = picker.value === "matching";
+      englishPage.hidden = showRosa || showMatching;
+      rosaPage.hidden = !showRosa;
+      matchingPage.hidden = !showMatching;
+      if (showMatching) buildMatchingGame();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function shuffledIndexes(length) {
+      const indexes = Array.from({ length }, (_, index) => index);
+      for (let current = indexes.length - 1; current > 0; current -= 1) {
+        const random = Math.floor(Math.random() * (current + 1));
+        [indexes[current], indexes[random]] = [indexes[random], indexes[current]];
+      }
+      return indexes;
+    }
+
+    function makeMatchButton(text, index, language) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "match-item";
+      button.textContent = text;
+      button.dataset.index = index;
+      button.dataset.language = language;
+      button.addEventListener("click", () => selectMatch(button));
+      return button;
+    }
+
+    function buildMatchingGame() {
+      const englishMatches = document.querySelector("#english-matches");
+      const spanishMatches = document.querySelector("#spanish-matches");
+      const status = document.querySelector("#match-status");
+      englishMatches.replaceChildren();
+      spanishMatches.replaceChildren();
+      selectedEnglish = null;
+      selectedSpanish = null;
+      matchedCount = 0;
+      if (!cards.length) {
+        status.textContent = "Create some highlighted flashcards first.";
+        return;
+      }
+      status.textContent = `Find all ${cards.length} matching pairs.`;
+      cards.forEach((item, index) => {
+        englishMatches.append(makeMatchButton(item.english, index, "english"));
+      });
+      cards
+        .map((item, index) => ({ item, index }))
+        .sort((a, b) => a.item.spanish.localeCompare(b.item.spanish, "es", { sensitivity: "base" }))
+        .forEach(({ item, index }) => {
+        spanishMatches.append(makeMatchButton(cards[index].spanish, index, "spanish"));
+      });
+    }
+
+    function showFireworks(firstButton, secondButton) {
+      const first = firstButton.getBoundingClientRect();
+      const second = secondButton.getBoundingClientRect();
+      const centerX = (first.left + first.right + second.left + second.right) / 4;
+      const centerY = (first.top + first.bottom + second.top + second.bottom) / 4;
+      const layer = document.createElement("div");
+      layer.className = "firework-layer";
+      const colors = ["#ffca28", "#ef476f", "#06d6a0", "#118ab2", "#9b5de5"];
+      for (let index = 0; index < 28; index += 1) {
+        const spark = document.createElement("i");
+        const angle = (Math.PI * 2 * index) / 28;
+        const distance = 75 + Math.random() * 115;
+        spark.className = "spark";
+        spark.style.left = `${centerX}px`;
+        spark.style.top = `${centerY}px`;
+        spark.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+        spark.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
+        spark.style.setProperty("--spark-color", colors[index % colors.length]);
+        layer.append(spark);
+      }
+      document.body.append(layer);
+      setTimeout(() => layer.remove(), 600);
+    }
+
+    function selectMatch(button) {
+      const language = button.dataset.language;
+      const previous = language === "english" ? selectedEnglish : selectedSpanish;
+      if (previous) previous.classList.remove("selected", "pinned");
+      button.classList.add("selected");
+      if (language === "english") {
+        button.classList.add("pinned");
+        selectedEnglish = button;
+      }
+      else selectedSpanish = button;
+      if (!selectedEnglish || !selectedSpanish) return;
+
+      const correct = selectedEnglish.dataset.index === selectedSpanish.dataset.index;
+      selectedEnglish.classList.remove("pinned");
+      if (correct) {
+        const correctEnglish = selectedEnglish;
+        const correctSpanish = selectedSpanish;
+        selectedEnglish.classList.replace("selected", "correct");
+        selectedSpanish.classList.replace("selected", "correct");
+        selectedEnglish.disabled = true;
+        selectedSpanish.disabled = true;
+        showFireworks(correctEnglish, correctSpanish);
+        matchedCount += 1;
+        document.querySelector("#match-status").textContent = matchedCount === cards.length
+          ? "Excellent! You matched every pair."
+          : `Correct! ${matchedCount} of ${cards.length} pairs matched.`;
+        setTimeout(() => {
+          correctEnglish.remove();
+          correctSpanish.remove();
+        }, 420);
+      } else {
+        const wrongEnglish = selectedEnglish;
+        const wrongSpanish = selectedSpanish;
+        wrongEnglish.classList.replace("selected", "wrong");
+        wrongSpanish.classList.replace("selected", "wrong");
+        document.querySelector("#match-status").textContent = "Not a match—try again.";
+        setTimeout(() => {
+          wrongEnglish.classList.remove("wrong");
+          wrongSpanish.classList.remove("wrong");
+        }, 650);
+      }
+      selectedEnglish = null;
+      selectedSpanish = null;
+    }
+
+    function renderCard() {
+      if (!cards.length) {
+        cardLanguage.textContent = "Your deck is empty";
+        cardText.textContent = "Highlight Rosa’s English text to create your first card.";
+        cardText.className = "empty-card";
+        cardCount.textContent = "0 cards";
+        return;
+      }
+      cardText.className = "";
+      const side = showingSpanish ? "spanish" : "english";
+      cardText.textContent = cards[cardIndex][side];
+      cardLanguage.textContent = showingSpanish ? "Spanish" : "English";
+      cardCount.textContent = `Card ${cardIndex + 1} of ${cards.length}`;
+    }
+
+    function flipCard() {
+      if (!cards.length) return;
+      showingSpanish = !showingSpanish;
+      renderCard();
+    }
+
+    function moveCard(direction) {
+      if (!cards.length) return;
+      cardIndex = (cardIndex + direction + cards.length) % cards.length;
+      showingSpanish = false;
+      renderCard();
+    }
+
+    picker.addEventListener("change", showSelectedPage);
+    document.querySelector("#sync-button").addEventListener("click", connectCloud);
+    groupToggle.addEventListener("change", () => {
+      groupStatus.textContent = groupToggle.checked
+        ? "Highlight mode is on. Drag across the words for your next flashcard."
+        : "Highlight mode is off. Your existing groups are preserved.";
+    });
+    document.addEventListener("pointerup", event => {
+      if (groupToggle.checked) saveHighlight();
+    });
+    rosaEnglish.addEventListener("click", event => {
+      const mark = event.target.closest(".user-highlight");
+      if (mark) removeHighlight(mark);
+    });
+    card.addEventListener("click", flipCard);
+    card.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        flipCard();
+      }
+    });
+    document.querySelector("#flip-card").addEventListener("click", flipCard);
+    document.querySelector("#previous-card").addEventListener("click", () => moveCard(-1));
+    document.querySelector("#next-card").addEventListener("click", () => moveCard(1));
+
+    restoreHighlights();
+    syncCodeInput.value = localStorage.getItem("span002-sync-code") || "";
+    if (syncCodeInput.value) connectCloud();
+    groupStatus.textContent = "Highlight mode is on. Drag across the words for your next flashcard.";
+    renderCard();
+  </script>
+</body>
+</html>
